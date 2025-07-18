@@ -1,0 +1,109 @@
+@import url("https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap");
+
+@import "tailwindcss";
+
+@theme {
+  --breakpoint-xxs: 15rem;
+  --breakpoint-xls: 20rem;
+  --breakpoint-xs: 30rem;
+
+  /* colors */
+  --color-dark-text: hsl(229, 25%, 31%);
+  --color-score-text: hsl(229, 64%, 46%);
+  --color-header-out: hsl(217, 16%, 45%);
+  --color-gold-l: hsl(40, 84%, 53%);
+  --color-gold-d: hsl(39, 89%, 49%);
+  --color-red-l: hsl(349, 70%, 56%);
+  --color-red-d: hsl(349, 71%, 52%);
+  --color-bluep-l: hsl(230, 89%, 65%);
+  --color-bluep-d: hsl(230, 89%, 62%);
+  --color-purple-d: hsl(261, 73%, 60%);
+  --color-purple-l: hsl(261, 72%, 63%);
+  --color-cyan-d: hsl(189, 59%, 53%);
+  --color-cyan-l: hsl(189, 58%, 57%);
+  --color-dark-bg: hsl(237, 49%, 15%);
+}
+
+:root {
+  --gold-l: hsl(40, 84%, 53%);
+  --gold-d: hsl(39, 89%, 49%);
+  --red-l: hsl(349, 70%, 56%);
+  --red-d: hsl(349, 71%, 52%);
+  --bluep-l: hsl(230, 89%, 65%);
+  --bluep-d: hsl(230, 89%, 62%);
+  --purple-d: hsl(261, 73%, 60%);
+  --purple-l: hsl(261, 72%, 63%);
+  --cyan-d: hsl(189, 59%, 53%);
+  --cyan-l: hsl(189, 58%, 57%);
+  --dark-bg: hsl(237, 49%, 15%);
+
+  --radial-grad-bg: linear-gradient(hsl(214, 47%, 23%), hsl(237, 49%, 15%));
+  --dark-text: hsl(229, 25%, 31%);
+  --score-text: hsl(229, 64%, 46%);
+  --header-out: hsl(217, 16%, 45%);
+
+  font-family: "Josefin Sans", sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+  font-size: 15px;
+  /* color-scheme: light dark; */
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  margin: 0;
+  height: 100vh;
+  background: var(--radial-grad-bg);
+  background-repeat: no-repeat;
+}
+
+.outer-glow {
+  box-shadow: 0 0 0 60px rgba(43, 56, 87, 0.7),
+    0 0 0 150px rgba(43, 56, 87, 0.5), 0 0 0 180px rgba(43, 56, 87, 0.3);
+}
+.gold-l {
+  box-shadow: 0 0 0 15px var(--gold-l);
+}
+
+.red-l {
+  box-shadow: 0 0 0 1em var(--red-l);
+}
+
+.bluep-l {
+  box-shadow: 0 0 0 15px var(--bluep-l);
+}
+
+.purple-l {
+  box-shadow: 0 0 0 15px var(--purple-l);
+}
+.cyan-l {
+  box-shadow: 0 0 0 15px var(--cyan-l);
+}
+
+.point1 {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  transform: translateY(-50%) translateX(-50%) rotate(var(--angle)) translate(140px)
+    rotate(calc(-1 * var(--angle)));
+}
+
+.pointF {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  transform: translateY(-50%) translateX(-50%);
+}
+
+
+.point {
+  position: absolute;
+  left: calc(50% + var(--x-offset));
+  top: calc(50% + var(--y-offset));
+  transform: translate(-50%, -50%) rotate(var(--angle)) translate(var(--radius))
+    rotate(calc(-1 * var(--angle)));
+}
+
