@@ -99,11 +99,11 @@ body {
 }
 
 
-.point {
+/* .point {
   position: absolute;
   left: calc(50% + var(--x-offset));
   top: calc(50% + var(--y-offset));
   transform: translate(-50%, -50%) rotate(var(--angle)) translate(var(--radius))
     rotate(calc(-1 * var(--angle)));
-}
+} */
 

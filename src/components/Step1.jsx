@@ -1,105 +1,125 @@
+import { useState, useEffect, useRef, useCallback } from "react";
 import { GameOption } from "./GameBits";
 
-const Step1 = ({ setUPicked, mode }) => {
-  const Rps = () => {
-    return (
-      <div className="translate-y-1/5 px-[20%] ">
-        <div className="relative flex ">
-          <img
-            src="images/bg-triangle.svg"
-            alt="game triangle background"
-            className=""
-          />
-          <GameOption
-            name="paper"
-            colo="bg-bluep-l"
-            cls="left-0 -translate-y-1/2 -translate-x-1/2"
-            setUPicked={setUPicked}
-          />
-          <GameOption
-            name="scissors"
-            colo="bg-gold-l"
-            cls="right-0 -translate-y-1/2 translate-x-1/2"
-            setUPicked={setUPicked}
-          />
-          <GameOption
-            name="rock"
-            colo="bg-red-l"
-            cls="bottom-0 left-1/2 -translate-x-1/2 translate-y-1/5"
-            setUPicked={setUPicked}
-          />
-        </div>
-      </div>
-    );
+// A simple utility to debounce a function for performance on resize
+const debounce = (func, delay) => {
+  let timeout;
+  return (...args) => {
+    clearTimeout(timeout);
+    timeout = setTimeout(() => func.apply(this, args), delay);
   };
-  const Rpssl = () => {
+};
 
-    return (
-      <div className=" ">
-        <div className="relative ">
-          <img
-            src="images/bg-pentagon.svg"
-            alt="game pentagon background"
-            className=""
-          />
-          <span
-            style={{
-              "--angle": "0deg",
-              "--x-offset": "-10px",
-              "--y-offset": "-130px",
-              "--radius": "0px",
-            }}
-            className="point size-24 rounded-full ring-2 ring-amber-300 "
-          ></span>
+const pentagonVertices = [
+  [50, 0, "scissors"], // Top vertex
+  [96, 35, "paper"], // Top-right
+  [78, 90, "rock"], // Bottom-right
+  [22, 90, "lizard"], // Bottom-left
+  [4, 35, "spock"], // Top-left
+];
 
-          
-          <span
-            style={{
-              "--angle": "72deg",
-              "--x-offset": "-10px",
-              "--y-offset": "-130px",
-              "--radius": "140px",
-            }}
-            className="point1 size-24 rounded-full ring-2 ring-green-600 "
-          ></span>
-          <span
-            style={{
-              "--angle": "144deg",
-              "--x-offset": "-10px",
-              "--y-offset": "-130px",
-              "--radius": "140px",
-            }}
-            className="point size-24 rounded-full ring-2 ring-blue-600 "
-          ></span>
-          {/* <span
-            style={{
-              "--angle": "216deg",
-              "--x-offset": "-10px",
-              "--y-offset": "-130px",
-              "--radius": "0px",
-            }}
-            className="point size-24 rounded-full ring-2 ring-amber-300 "
-          ></span>
-          <span
-            style={{
-              "--angle": "288deg",
-              "--x-offset": "-10px",
-              "--y-offset": "-130px",
-              "--radius": "0px",
-            }}
-            className="point size-24 rounded-full ring-2 ring-amber-300 "
-          ></span> */}
-        </div>
-      </div>
-    );
+const triangleVertices = [
+  ["0%", "0%", "paper"], // Top-left
+  [100, 0, "scissors"], //top-right
+  [50, 100, "rock"], // Bottom
+];
+
+const Step1 = ({ setUPicked, mode }) => {
+  const [circlePositions, setCirclePositions] = useState([]);
+  const imgRef = useRef(null);
+  const containerRef = useRef(null);
+
+  const verticesData =
+    mode === "triangle" ? triangleVertices : pentagonVertices;
+
+  // Memoize the position calculation function
+  const getCirclePositions = useCallback(() => {
+    if (!imgRef.current || !containerRef.current) {
+      return;
+    }
+    const imgRect = imgRef.current.getBoundingClientRect();
+    const containerRect = containerRef.current.getBoundingClientRect();
+
+    // Calculate the offset of the image relative to its container's top-left corner
+    // This is crucial if the image is centered within a larger container
+    const imgOffsetX = imgRect.left - containerRect.left;
+    const imgOffsetY = imgRect.top - containerRect.top;
+
+    const newPositions = verticesData.map(([relX, relY, name]) => {
+      const absX = imgRect.width * (relX / 100) + imgOffsetX;
+      const absY = imgRect.height * (relY / 100) + imgOffsetY;
+      return { left: absX, top: absY, name };
+    });
+
+    setCirclePositions(newPositions);
+  }, [verticesData]); // Recalculate if verticesData changes
+
+  // Debounced version for resize events
+  const debouncedgetCirclePositions = useCallback(
+    debounce(getCirclePositions, 100),
+    [getCirclePositions]
+  );
+
+  // Effect for initial positioning and handling image load
+  useEffect(() => {
+    const imgElement = imgRef.current;
+
+    // Ensure positions are calculated once the image is loaded
+    // and also for cases where image might be cached
+    if (imgElement) {
+      if (imgElement.complete) {
+        getCirclePositions();
+      } else {
+        imgElement.addEventListener("load", getCirclePositions);
+      }
+    }
+
+    // Cleanup: remove event listener if component unmounts
+    return () => {
+      if (imgElement) {
+        imgElement.removeEventListener("load", getCirclePositions);
+      }
+    };
+  }, [getCirclePositions]); // Only re-run if getCirclePositions changes
+
+  // Effect for handling window resize
+  useEffect(() => {
+    window.addEventListener("resize", debouncedgetCirclePositions);
+    return () => {
+      window.removeEventListener("resize", debouncedgetCirclePositions);
+    };
+  }, [debouncedgetCirclePositions]); // Only re-run if debounced function changes
+
+  const shapeStyle = {
+    maxWidth: mode === "triangle" ? "313px" : "329px",
+    width: "100%",
   };
 
   return (
-    <>
-      {mode === "RPS" ? <Rps />: <Rpssl />}
-    </>
+    <div
+      style={shapeStyle}
+      id={`${mode}-container`}
+      className="flex items-center justify-center relative"
+      ref={containerRef}
+    >
+      <img
+        src={`images/bg-${mode}.svg`}
+        alt={`${mode} base`}
+        className="max-w-full block h-auto"
+        ref={imgRef}
+      />
+      {circlePositions.map((position) => (
+        <GameOption
+          key={position.name}
+          name={position.name}
+          left={position.left}
+          top={position.top}
+          setUPicked={setUPicked}
+          cirWidth={mode === "pentagon" && "40%"}
+        />
+      ))}
+    </div>
   );
 };
-
 
 export default Step1;

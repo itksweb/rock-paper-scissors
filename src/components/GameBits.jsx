@@ -23,25 +23,26 @@ const getElement = (name) => {
     default:
       break;
   }
-  return { colo };
+  return colo;
 };
 
-export const GameOption = ({ name, setUPicked, cls, colo }) => {
-  const outer = `bg-${colo}-d`;
-  const inner = `bg-${colo}-l`;
-
+export const GameOption = ({ name, cirWidth, setUPicked, cls, left, top }) => {
+  const colo = getElement(name)
+  const pos = left || top ? {left, top}:{};
   const cooo = colo.slice(3).slice(0, -1);
-  const outShadow = {
+  const circleContainer = {
     boxShadow: `0 1em 0 -0.5em var(--${cooo}d)`,
     fontSize: "clamp(8px, 2vw, 30px)",
+    width : cirWidth ? cirWidth: "64%",
+    ...pos
   };
 
   return (
     <button
       type="button"
-      style={outShadow}
+      style={circleContainer}
       onClick={() => setUPicked(name)}
-      className={`cursor-pointer absolute w-[64%] aspect-square ${colo} flex items-center justify-center rounded-full ${
+      className={`cursor-pointer absolute aspect-square ${colo} flex -translate-1/2 items-center justify-center rounded-full ${
         cls ? cls : ""
       }`}
     >
@@ -57,7 +58,7 @@ export const GameOption = ({ name, setUPicked, cls, colo }) => {
 };
 
 export const Picked = ({ picked, label, setHPicked, wrap, cls }) => {
-  const { colo } = getElement(picked);
+  const colo  = getElement(picked);
   const [show, setShow] = useState(false);
   const cooo = colo.slice(3).slice(0, -1);
 

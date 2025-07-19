@@ -3,6 +3,7 @@ import Step1 from "./components/Step1";
 import Step2 from "./components/Step2";
 import Rules from "./components/Modal";
 import Header from "./components/Header";
+import Footer from "./components/Footer";
 
 const App = () => {
   const [uPicked, setUPicked] = useState("");
@@ -10,7 +11,7 @@ const App = () => {
   const [verdict, setVerdict] = useState("");
   const [score, setScore] = useState(12);
   const [showRules, setShowRules] = useState(false);
-  const [mode, setMode] = useState("RPS")
+  const [mode, setMode] = useState("triangle");
 
   useEffect(() => {
     switch (verdict) {
@@ -75,7 +76,7 @@ const App = () => {
       <Header score={score} />
       <main className="flex-1 py-6 w-full flex items-center justify-center ">
         {!uPicked ? (
-          <Step1 setUPicked={setUPicked} mode = {mode} />
+          <Step1 setUPicked={setUPicked} mode={mode} />
         ) : (
           <Step2
             uPicked={uPicked}
@@ -86,24 +87,8 @@ const App = () => {
           />
         )}
       </main>
-      <footer className=" w-full flex max-sm:flex-col-reverse justify-center sm:justify-between pt-6 items-center">
-        <button
-          type="button"
-          onClick={() => setMode(mode === "RPS" ? "RPSSL" : "RPS")}
-          className=" cursor-pointer px-7 py-1.5 text-white italic text-sm "
-        >
-          Play Rock Paper Scissors{mode === "RPS" ? " Spock Lizard" : ""}{" "}
-          instead
-        </button>
-        <button
-          type="button"
-          onClick={() => setShowRules(true)}
-          className=" outline-2 outline-header-out cursor-pointer rounded-lg px-7 py-1.5 text-white"
-        >
-          RULES
-        </button>
-      </footer>
-      {showRules ? <Rules setShowRules={setShowRules} /> : <></>}
+      <Footer setMode={setMode} setShowRules={setShowRules} mode={mode} />
+      {showRules ? <Rules setShowRules={setShowRules} mode={mode} /> : <></>}
     </div>
   );
 };

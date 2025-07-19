@@ -8,7 +8,7 @@ const Modal = ({ children }) => {
   );
 };
 
-const Rules = ({ setShowRules }) => {
+const Rules = ({ setShowRules, mode }) => {
   return (
     <Modal>
       <div className="flex justify-between items-center">
@@ -20,7 +20,15 @@ const Rules = ({ setShowRules }) => {
           onClick={() => setShowRules(false)}
         />
       </div>
-      <img src="images/image-rules.svg" alt="rules image" className="" />
+      <img
+        src={
+          mode === "triangle"
+            ? "images/image-rules.svg"
+            : "images/image-rules-bonus.svg"
+        }
+        alt="rules image"
+        className=""
+      />
       <img
         src="images/icon-close.svg"
         alt="close icon"
