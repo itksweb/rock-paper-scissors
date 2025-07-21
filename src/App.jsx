@@ -1,17 +1,17 @@
 import { useEffect, useState } from "react";
-import Step1 from "./components/Step1";
-import Step2 from "./components/Step2";
-import Rules from "./components/Modal";
-import Header from "./components/Header";
-import Footer from "./components/Footer";
+import { Header, Footer } from "./components/template-parts";
+import { Step1, Step2 } from "./components/steps";
+import { rulesBasis } from "./utils";
+const scor = localStorage.getItem("score");
+
 
 const App = () => {
   const [uPicked, setUPicked] = useState("");
   const [hPicked, setHPicked] = useState("");
   const [verdict, setVerdict] = useState("");
-  const [score, setScore] = useState(12);
+  const [score, setScore] = useState(scor ? +scor : 12);
   const [showRules, setShowRules] = useState(false);
-  const [mode, setMode] = useState("triangle");
+  const [mode, setMode] = useState("rps");
 
   useEffect(() => {
     switch (verdict) {
@@ -32,27 +32,19 @@ const App = () => {
   );
 
   useEffect(() => {
-    const getVerdict = (uPicked, hPicked) => {
-      if (uPicked === hPicked) {
+    const getVerdict = (x, y) => {
+      if (x === y) {
         return setVerdict("DRAW");
       }
-      if (
-        (uPicked === "scissors" && hPicked === "paper") ||
-        (uPicked === "paper" && hPicked === "scissors")
-      ) {
-        return setVerdict(uPicked === "scissors" ? "WIN" : "LOSE");
-      }
-      if (
-        (uPicked === "paper" && hPicked === "rock") ||
-        (uPicked === "rock" && hPicked === "paper")
-      ) {
-        return setVerdict(uPicked === "paper" ? "WIN" : "LOSE");
-      }
-      if (
-        (uPicked === "rock" && hPicked === "scissors") ||
-        (uPicked === "scissors" && hPicked === "rock")
-      ) {
-        return setVerdict(uPicked === "rock" ? "WIN" : "LOSE");
+      const pick = rulesBasis
+        .map((item) => item.toLowerCase())
+        .filter(
+          (item) =>
+            (item.startsWith(x) && item.endsWith(y)) ||
+            (item.startsWith(y) && item.endsWith(x))
+        );
+      if (pick.length === 1) {
+        return setVerdict(pick[0].startsWith(x) ? "WIN" : "LOSE");
       }
     };
     if (uPicked && hPicked && !verdict) {
@@ -74,7 +66,7 @@ const App = () => {
   return (
     <div className={`w-full h-full flex flex-col items-center p-5 `}>
       <Header score={score} />
-      <main className="flex-1 py-6 w-full flex items-center justify-center ">
+      <main className="flex-1 py-6 w-full flex items-center justify-center max-sm:px-[20%] ">
         {!uPicked ? (
           <Step1 setUPicked={setUPicked} mode={mode} />
         ) : (
@@ -87,8 +79,13 @@ const App = () => {
           />
         )}
       </main>
-      <Footer setMode={setMode} setShowRules={setShowRules} mode={mode} />
-      {showRules ? <Rules setShowRules={setShowRules} mode={mode} /> : <></>}
+      <Footer
+        setMode={setMode}
+        setShowRules={setShowRules}
+        mode={mode}
+        uPicked={uPicked}
+        showRules={showRules}
+      />
     </div>
   );
 };

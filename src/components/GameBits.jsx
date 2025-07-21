@@ -1,40 +1,15 @@
 import { useEffect, useState } from "react";
+import { getElement } from "../utils";
 
-const getElement = (name) => {
-  let colo = "";
-
-  switch (name) {
-    case "scissors":
-      colo = "bg-gold-l";
-      break;
-    case "paper":
-      colo = "bg-bluep-l";
-      break;
-    case "rock":
-      colo = "bg-red-l";
-      break;
-    case "lizard":
-      colo = "bg-purple-l";
-      break;
-    case "spock":
-      colo = "bg-cyan-l";
-      break;
-
-    default:
-      break;
-  }
-  return colo;
-};
-
-export const GameOption = ({ name, cirWidth, setUPicked, cls, left, top }) => {
-  const colo = getElement(name)
-  const pos = left || top ? {left, top}:{};
+export const GameOption = ({ name, width, setUPicked, cls, left, top }) => {
+  const colo = getElement(name);
   const cooo = colo.slice(3).slice(0, -1);
   const circleContainer = {
     boxShadow: `0 1em 0 -0.5em var(--${cooo}d)`,
     fontSize: "clamp(8px, 2vw, 30px)",
-    width : cirWidth ? cirWidth: "64%",
-    ...pos
+    width,
+    left,
+    top,
   };
 
   return (
@@ -58,7 +33,7 @@ export const GameOption = ({ name, cirWidth, setUPicked, cls, left, top }) => {
 };
 
 export const Picked = ({ picked, label, setHPicked, wrap, cls }) => {
-  const colo  = getElement(picked);
+  const colo = getElement(picked);
   const [show, setShow] = useState(false);
   const cooo = colo.slice(3).slice(0, -1);
 
@@ -76,9 +51,6 @@ export const Picked = ({ picked, label, setHPicked, wrap, cls }) => {
   useEffect(() => {
     if (label === "house" && picked) setTimeout(() => setShow(true), 2000);
   }, [picked]);
-  const outerGlow = {
-    boxShadow: `0 0 0 60px rgba(43, 56, 87, 0.7), 0 0 0 150px rgba(43, 56, 87, 0.5), 0 0 0 180px rgba(43, 56, 87, 0.3)`,
-  };
 
   const circShad = {
     backgroundColor: `var(--${cooo}d`,
@@ -119,6 +91,39 @@ export const Picked = ({ picked, label, setHPicked, wrap, cls }) => {
       ) : (
         <div className="l size-48 rounded-full bg-dark-bg"></div>
       )}
+    </div>
+  );
+};
+
+export const Rules = ({ setShowRules, mode }) => {
+  return (
+    <div className="fixed top-0 left-0 w-full h-full flex justify-center items-center bg-[rgba(0,0,0,0.5)]">
+      <div className=" bg-white flex max-sm:h-full flex-col max-sm:items-center max-sm:justify-evenly gap-10 p-10 rounded-md relative ">
+        <div className="flex justify-between items-center">
+          <h2 className="text-3xl">RULES</h2>
+          <img
+            src="images/icon-close.svg"
+            alt="close icon"
+            className="max-sm:hidden size-5"
+            onClick={() => setShowRules(false)}
+          />
+        </div>
+        <img
+          src={
+            mode === "rps"
+              ? "images/image-rules.svg"
+              : "images/image-rules-bonus.svg"
+          }
+          alt="rules image"
+          className=""
+        />
+        <img
+          src="images/icon-close.svg"
+          alt="close icon"
+          className="sm:hidden size-5"
+          onClick={() => setShowRules(false)}
+        />
+      </div>
     </div>
   );
 };

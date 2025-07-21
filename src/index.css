@@ -83,27 +83,6 @@ body {
   box-shadow: 0 0 0 15px var(--cyan-l);
 }
 
-.point1 {
-  position: absolute;
-  left: 50%;
-  top: 0;
-  transform: translateY(-50%) translateX(-50%) rotate(var(--angle)) translate(140px)
-    rotate(calc(-1 * var(--angle)));
-}
-
-.pointF {
-  position: absolute;
-  left: 50%;
-  top: 0;
-  transform: translateY(-50%) translateX(-50%);
-}
 
 
-/* .point {
-  position: absolute;
-  left: calc(50% + var(--x-offset));
-  top: calc(50% + var(--y-offset));
-  transform: translate(-50%, -50%) rotate(var(--angle)) translate(var(--radius))
-    rotate(calc(-1 * var(--angle)));
-} */
 

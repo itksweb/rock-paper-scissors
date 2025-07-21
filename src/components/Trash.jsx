@@ -1,5 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { GameOption } from "./GameBits";
+import Rps from "./Rps";
+import Rpssl from "./Rpssl";
 
 // A simple utility to debounce a function for performance on resize
 const debounce = (func, delay) => {
@@ -19,7 +21,7 @@ const pentagonVertices = [
 ];
 
 const triangleVertices = [
-  ["0%", "0%", "paper"], // Top-left
+  [0, 0, "paper"], // Top-left
   [100, 0, "scissors"], //top-right
   [50, 100, "rock"], // Bottom
 ];
@@ -29,8 +31,7 @@ const Step1 = ({ setUPicked, mode }) => {
   const imgRef = useRef(null);
   const containerRef = useRef(null);
 
-  const verticesData =
-    mode === "triangle" ? triangleVertices : pentagonVertices;
+  const verticesData = mode === "rps" ? triangleVertices : pentagonVertices;
 
   // Memoize the position calculation function
   const getCirclePositions = useCallback(() => {
@@ -90,35 +91,75 @@ const Step1 = ({ setUPicked, mode }) => {
     };
   }, [debouncedgetCirclePositions]); // Only re-run if debounced function changes
 
-  const shapeStyle = {
-    maxWidth: mode === "triangle" ? "313px" : "329px",
-    width: "100%",
+  const Rps = ({ circlePositions, setUPicked, containerRef, imgRef }) => {
+    return (
+      <div
+        className="flex items-center justify-center max-w-[313px] w-full relative"
+        ref={containerRef}
+      >
+        <img
+          src="images/bg-triangle.svg"
+          alt="triangle"
+          className="max-w-full block h-auto"
+          ref={imgRef}
+        />
+        {circlePositions.map((position) => (
+          <GameOption
+            key={position.name}
+            name={position.name}
+            left={position.left}
+            top={position.top}
+            setUPicked={setUPicked}
+          />
+        ))}
+      </div>
+    );
+  };
+
+  const Rpssl = ({ circlePositions, setUPicked, containerRef, imgRef }) => {
+    return (
+      <div
+        className="flex items-center justify-center max-w-[329px] w-full relative"
+        ref={containerRef}
+      >
+        <img
+          src="images/bg-pentagon.svg"
+          alt="pentagon"
+          className="max-w-full block h-auto"
+          ref={imgRef}
+        />
+        {circlePositions.map((position) => (
+          <GameOption
+            key={position.name}
+            name={position.name}
+            left={position.left}
+            top={position.top}
+            setUPicked={setUPicked}
+            cirWidth="40%"
+          />
+        ))}
+      </div>
+    );
   };
 
   return (
-    <div
-      style={shapeStyle}
-      id={`${mode}-container`}
-      className="flex items-center justify-center relative"
-      ref={containerRef}
-    >
-      <img
-        src={`images/bg-${mode}.svg`}
-        alt={`${mode} base`}
-        className="max-w-full block h-auto"
-        ref={imgRef}
-      />
-      {circlePositions.map((position) => (
-        <GameOption
-          key={position.name}
-          name={position.name}
-          left={position.left}
-          top={position.top}
+    <>
+      {mode === "rps" ? (
+        <Rps
+          circlePositions={circlePositions}
           setUPicked={setUPicked}
-          cirWidth={mode === "pentagon" && "40%"}
+          imgRef={imgRef}
+          containerRef={containerRef}
         />
-      ))}
-    </div>
+      ) : (
+        <Rpssl
+          circlePositions={circlePositions}
+          setUPicked={setUPicked}
+          imgRef={imgRef}
+          containerRef={containerRef}
+        />
+      )}
+    </>
   );
 };
 
